@@ -1,0 +1,344 @@
+﻿<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8" />
+        <meta http-equiv="Cache-Control" content="no-cache" />
+        <meta http-equiv="Pragma" content="no-cache" />
+
+        <style>
+        h1 {
+            color: paleturquoise;
+            background-color: black;
+        }
+
+        .container {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+
+
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        #tooltips-div {
+            position: absolute;
+            bottom: 20px;
+            background: rgba(232, 245, 255, 0.85);
+            padding: 5px 10px;
+            border: 2px solid #A5D8FF;
+            -khtml-border-radius: 16px;
+            -webkit-border-radius: 16px;
+            -moz-border-radius: 16px;
+            border-radius: 16px;
+            z-index: 1;
+            width: 200px;
+        }
+
+
+        #longdomap-legend-div {
+            position: absolute;
+            bottom: 80px;
+            right: 10px;
+            background: rgba(232, 245, 255, 0.85);
+            padding: 5px 10px;
+            border: 2px solid #A5D8FF;
+            -khtml-border-radius: 16px;
+            -webkit-border-radius: 16px;
+            -moz-border-radius: 16px;
+            border-radius: 16px;
+            z-index: 1;
+        }
+
+        #longdomap-legend-content-div {
+            overflow-y: auto;
+            text-align: center;
+        }
+
+        #longdomap-legend-collapse-title {
+            line-height: 16px;
+            margin: 5px 20px 6px 2px;
+            font-size: 14px;
+            color: #222;
+            float: left;
+        }
+
+        #longdomap-legend-collapse-text {
+            margin-right: 5px;
+            font-size: 12px;
+            line-height: 16px;
+            height: 16px;
+        }
+
+        #longdomap-legend-div.longdomap-legend-hidden {
+            background: rgba(32, 133, 243, 0.85);
+            padding: 8px 16px;
+        }
+
+        .longdomap-legend-description {
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .longdomap-legend-warning {
+            font-size: 11px;
+            color: #CC2725;
+            margin-top: 10px;
+        }
+
+
+        #longdomap-legend-div.longdomap-legend-hidden #longdomap-legend-content-div {
+            display: none;
+        }
+
+        #longdomap-legend-div.longdomap-legend-hidden #longdomap-legend-collapse-text {
+            color: #FFF;
+            font-size: 14px;
+        }
+
+        #longdomap-legend-collapse-div .collapse-arrow,
+        #longdomap-legend-collapse-text {
+            float: right;
+            cursor: pointer;
+        }
+
+        #longdomap-legend-collapse-div .collapse-arrow {
+            background: url(/mmmap/images/collapse-arrow.png) no-repeat;
+            background-position: bottom left;
+            width: 12px;
+            height: 12px;
+            margin-top: 2px;
+        }
+
+        #longdomap-legend-collapse-div {
+            margin-bottom: 5px;
+            cursor: pointer;
+            color: #2085f3;
+            text-align: right;
+        }
+
+        #longdomap-legend-div.longdomap-legend-hidden #longdomap-legend-collapse-div {
+            margin-bottom: 0px;
+        }
+
+        #longdomap-legend-div.longdomap-legend-hidden #longdomap-legend-collapse-div .collapse-arrow {
+            background-position: top left;
+        }
+    </style>
+    </head>
+
+    <body style="background-color:black;">
+
+        <div class="container">
+
+            <img
+                src="https://yugenlab.com/wp-content/uploads/2017/08/glow-in-the-dark-stars-close-up-1024x666.jpg"
+                width="700" height="50">
+
+
+            <div class="centered">
+
+                <h1 style="font-size:30px;">Fire Elephant</h1>
+            </div>
+        </div>
+        <div id="longdomap-legend-div" class="">
+            <div id="longdomap-legend-collapse-div">
+                <div class="collapse-arrow"></div>
+                <div id="longdomap-legend-collapse-title" class="float-left"
+                    style="display: inline;">
+                    คำอธิบายความหมายของหมุด</div>
+                <div class="clear" style="clear:both"></div>
+            </div>
+            <div id="longdomap-legend-content-div"><img src="./img/pin.png"
+                    style="max-width: 100%" width="200"></div>
+        </div>
+
+        <div id="map" style="position: absolute; width: 100% ; top: 0; bottom:
+            0;">
+
+
+
+        </div>
+
+
+
+
+        <script
+            src="http://api.longdo.com/map/?key=3024cbe278e024cf2503cd2e87002a2d"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script>
+        //Geopositions
+
+        //var long = new Array(Len);
+        //var lati = new Array(Len);
+
+
+
+        //for (var l = 0; l < Len; l++) {
+        //long[l] = Sensorspo.features[l].geometry.coordinates[0];
+        //lati[l] = Sensorspo.features[l].geometry.coordinates[1];
+        //}
+        var map;
+        var markers = new Array();
+        var long = new Array();
+        var lati = new Array();
+        var fire_stat = new Array();
+        var lati_trans = new Array();
+        var long_trans = new Array();
+        var trans = new Array();
+        var enable = new Array();
+        var status_v = new Array();
+        var detectors_id = new Array();
+        var smoke_v = new Array();
+        var Leng;
+
+        function createMarker(idx, long_v, lat_v, url_img_icon) {
+            temp = lati_trans[idx];
+            tooltips_msg = "last lat : " + temp + " <br>";
+            temp = long_trans[idx];
+            tooltips_msg = tooltips_msg + "last long : " + temp + " <br>";
+            temp = status_v[idx];
+            tooltips_msg = tooltips_msg + "last status trans : " + temp + " <br>";
+            temp = detectors_id[idx];
+            tooltips_msg = tooltips_msg + " Detector id : " + temp + " <br>";
+            temp = fire_stat[idx] != 0 ? true : false;
+            tooltips_msg = tooltips_msg + " fire status : " + temp + " <br>";
+            temp = enable[idx] != 0 ? true : false;
+            tooltips_msg = tooltips_msg + " Detector available : " + temp + " <br>";
+            temp = smoke_v[idx];
+            tooltips_msg = tooltips_msg + " Smoke value : " + temp + " <br>";
+            markers[idx] = new longdo.Marker({
+                lon: long_v,
+                lat: lat_v
+            }, {
+                    icon: {
+                        url: url_img_icon
+                    },
+                    popup: {
+                        html: "<div id='tooltips-div' >" + tooltips_msg + "</div>"
+                    }
+                });
+            map.Overlays.add(markers[idx]);
+        }
+
+
+        function init() {
+            map = new longdo.Map({
+                placeholder: document.getElementById('map')
+            });
+            myTimer();
+        }
+
+        var myVar = setInterval(myTimer, 10000);
+
+        // New lat Long
+        // Work Get only all detail devices
+        function myTimer() {
+            map.Overlays.clear();
+            $.get("http://202.28.247.52/api/v1/details/devices", function (data_get) {
+                console.log(data_get);
+                Leng = data_get.data.length;
+                //console.log(Leng);
+                long = new Array();
+                lati = new Array();
+                fire_stat = new Array();
+                lati_trans = new Array();
+                long_trans = new Array();
+                trans = new Array();
+                enable = new Array();
+                status_v = new Array();
+                detectors_id = new Array();
+                smoke_v = new Array();
+
+                status_v = new Array(Leng);
+                for (var l = 0; l < Leng; l++) {
+                    status_v[l] = data_get.data[l].status;
+                    enable[l] = data_get.data[l].available_status;
+                    long[l] = data_get.data[l].longitude;
+                    lati[l] = data_get.data[l].latitude;
+                    fire_stat[l] = data_get.data[l].fire_status;
+                    lati_trans[l] = data_get.data[l].latitude_trans;
+                    long_trans[l] = data_get.data[l].longitude_trans;
+                    detectors_id[l] = data_get.data[l].detector_id;
+                    smoke_v[l] = data_get.data[l].smoke_v;
+                    //if (data_get.data[l].latitude_trans != null || data_get.data[l].longitude_trans != null) {
+                    //    trans[l] = 1;
+                    //}
+                    //else {
+                    //    trans[l] = 0;
+                }
+
+
+
+
+            }).then(
+
+                function () {
+                    for (var p = 0; p < Leng; p++) {
+
+                        // Sensor status_v identification
+
+                        if (status_v[p] == 9) {
+
+                            //if (trans[p] == 0) {
+                            createMarker(p, long[p], lati[p],
+                                'http://maps.google.com/mapfiles/ms/micons/green-dot.png');
+                            //}
+                            //else if (trans[p] == 1) {
+                            //    markers[p] = new longdo.Marker({ lon: long_trans[p], lat: lati_trans[p] }, { icon: { url: 'http://maps.google.com/mapfiles/ms/micons/bus.png' } });
+                            //};
+                        } else if (status_v[p] != null) {
+
+                            if (fire_stat[p] > 0) {
+                                if (fire_stat[p] == 1) {
+                                    createMarker(p, long[p], lati[p],
+                                        'http://maps.google.com/mapfiles/ms/micons/yellow-dot.png');
+                                } else if (fire_stat[p] == 2) {
+                                    createMarker(p, long[p], lati[p],
+                                        'http://maps.google.com/mapfiles/ms/micons/red-dot.png');
+                                } else {
+                                    createMarker(p, long[p], lati[p],
+                                        'http://maps.google.com/mapfiles/ms/micons/pink-dot.png');
+                                }
+                            } else {
+
+                                if (enable[p] == 0) {
+                                    createMarker(p, long_trans[p], lati_trans[p],
+                                        'http://maps.google.com/mapfiles/kml/pal3/icon51.png', 'Test5');
+                                } else {
+                                    if ((parseFloat(parseInt(lati[p] * 1000) / 1000, 10)) != (parseFloat(parseInt(
+                                        lati_trans[p] * 1000) / 1000, 10))) {
+                                        createMarker(p, long[p], lati[p],
+                                            'http://maps.google.com/mapfiles/ms/micons/bus.png');
+                                    } else {
+                                        createMarker(p, long[p], lati[p],
+                                            'http://maps.google.com/mapfiles/ms/micons/green-dot.png');
+                                    };
+                                }
+                            }
+
+
+                        }
+
+
+                    }
+                }
+            );
+        }
+
+        window.onload = init;
+    </script>
+        <script>
+        /**/
+    </script>
+
+    </body>
+
+</html>
