@@ -14,11 +14,11 @@
             <v-list-tile-action>
                 <v-icon right class="white--text">{{link.icon}}</v-icon>
             </v-list-tile-action>
-            <v-list-tile-contant>
+            <v-list-tile-content>
                 <v-list-tile-title left class="white--text">
                     {{link.text}}
                 </v-list-tile-title>
-            </v-list-tile-contant>
+            </v-list-tile-content>
         </v-btn>
 
         <v-spacer></v-spacer>
@@ -43,11 +43,11 @@
                 <v-list-tile-action>
                     <v-icon class="grey--text">{{link.icon}}</v-icon>
                 </v-list-tile-action>
-                <v-list-tile-contant>
+                <v-list-tile-content>
                     <v-list-tile-title class="grey--text">
                         {{link.text}}
                     </v-list-tile-title>
-                </v-list-tile-contant>
+                </v-list-tile-content>
             </v-list-tile>
         </v-list>
 
