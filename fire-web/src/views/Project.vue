@@ -207,7 +207,7 @@ export default {
               } else {
                 if (
                   parseFloat(parseInt(this.latitude[p] * 1000) / 1000, 10) !=
-                  parseFloat(parseInt(this.latitude_trans[p] * 1000) / 1000, 10)
+                  parseFloat(parseInt(this.lati_trans[p] * 1000) / 1000, 10)
                 ) {
                   this.createMarker(
                     p,
