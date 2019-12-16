@@ -85,7 +85,7 @@
         <v-img contain aspect-ratio="1" :src="require('@/img/AIS-logo-1.png')" class="ma-1 team"></v-img>
         <v-img contain aspect-ratio="1" :src="require('@/img/Chiang_Mai_University_Logo.png')" class="ma-1 team"></v-img>
         <v-img contain aspect-ratio="1" :src="require('@/img/logo-th.png')" class="ma-1 team"></v-img>
-        <v-img contain aspect-ratio="1" :src="require('@/img/NGG.jpg')" class="ma-1 team"></v-img>
+        <v-img contain aspect-ratio="1" :src="require('@/img/NGG.jpg')" class="ma-1 team img-circle"></v-img>
     </v-layout>
 </v-container>
 </template>
